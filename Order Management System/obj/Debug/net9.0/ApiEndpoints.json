@@ -1,0 +1,87 @@
+[
+  {
+    "ContainingType": "Order_Management_System.Controllers.ProductController",
+    "Method": "Getproducts",
+    "RelativePath": "v1/api/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "searchValue",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Order_Management_System.Controllers.ProductController",
+    "Method": "Createproducts",
+    "RelativePath": "v1/api/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productData",
+        "Type": "Order_Management_System.DTOs.ProductCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Order_Management_System.Controllers.ProductController",
+    "Method": "GetProductById",
+    "RelativePath": "v1/api/products/{productId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Order_Management_System.Controllers.ProductController",
+    "Method": "Updateproducts",
+    "RelativePath": "v1/api/products/{productId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "productData",
+        "Type": "Order_Management_System.DTOs.ProductUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Order_Management_System.Controllers.ProductController",
+    "Method": "Deleteproducts",
+    "RelativePath": "v1/api/products/{productId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
