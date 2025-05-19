@@ -5,7 +5,6 @@ namespace Order_Management_System.DTOs
     public class OrderUpdateDto
     {
         public Guid ProductId { get; set; }
-        public Guid CustomerId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -4,4 +4,3 @@ GET {{Order_Management_System_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
-GET http://localhost:5063/v1/api/products

@@ -7,7 +7,7 @@ namespace Order_Management_System.Services
 {
     public class ProductService:IProductService
     {
-        private static readonly List<Product> products = new List<Product>();
+        public static readonly List<Product> products = new List<Product>();
 
         private readonly IMapper mapper;
 

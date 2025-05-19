@@ -10,5 +10,7 @@ namespace Order_Management_System.DTOs
         public decimal Price { get; set; }
         [Required(ErrorMessage = "Product description is required!")]
         public string ProductDescription { get; set; } = string.Empty;
+        [Required(ErrorMessage ="Quantity is required!")]
+        public int Quantity { get; set; }
     }
 }

@@ -4,7 +4,7 @@ namespace Order_Management_System.DTOs
 {
     public class CustomerUpdateDto
     {
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Customer Name must contain 2 to 100 character!")]
+        [StringLength(100,ErrorMessage = "Customer Name must contain 2 to 100 character!")]
         public string CustomerName { get; set; } = string.Empty;
         [EmailAddress(ErrorMessage = "It's not a valid email address!")]
         public string CustomerEmail { get; set; } = string.Empty;
