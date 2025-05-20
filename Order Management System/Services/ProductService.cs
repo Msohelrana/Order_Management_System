@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Order_Management_System.data;
 using Order_Management_System.DTOs;
 using Order_Management_System.Interfaces;
 using Order_Management_System.Models;
@@ -7,60 +9,67 @@ namespace Order_Management_System.Services
 {
     public class ProductService:IProductService
     {
-        public static readonly List<Product> products = new List<Product>();
+        //public static readonly List<Product> products = new List<Product>();
 
-        private readonly IMapper mapper;
+        private readonly AppDbContext _appDbContext;
+        private readonly IMapper _mapper;
 
-        public ProductService(IMapper mapper)
+        public ProductService(AppDbContext appDbContext, IMapper mapper)
         {
-            this.mapper = mapper;
+            _mapper = mapper;
+            _appDbContext = appDbContext;
         }
         //GetAllProduct method for get all product
 
-        public List<ProductReadDto> GetAllProduct()
+        public async Task<List<ProductReadDto>> GetAllProduct()
         {
-            return mapper.Map<List<ProductReadDto>>(products);
+            var products = await _appDbContext.Products.ToListAsync();
+            return _mapper.Map<List<ProductReadDto>>(products);
 
         }
 
         //GetAProduct method for get a product by Id
 
-        public ProductReadDto? GetAProduct(Guid productId)
+        public async Task<ProductReadDto?> GetAProduct(Guid productId)
         {
-            var foundProduct = products.FirstOrDefault(c => c.ProductId == productId);
-            return foundProduct == null ? null : mapper.Map<ProductReadDto>(foundProduct);
+            var foundProduct = await _appDbContext.Products.FirstOrDefaultAsync(c => c.ProductId == productId);
+            return foundProduct == null ? null : _mapper.Map<ProductReadDto>(foundProduct);
         }
 
         //CreateProduct method for Create a product with data
 
-        public ProductReadDto CreateProduct(ProductCreateDto productData)
+        public async Task<ProductReadDto> CreateProduct(ProductCreateDto productData)
         {
-            var newProduct = mapper.Map<Product>(productData);
+            var newProduct = _mapper.Map<Product>(productData);
             newProduct.ProductId = Guid.NewGuid();
             newProduct.CreatedAt = DateTime.UtcNow;
-            products.Add(newProduct);
+            await _appDbContext.Products.AddAsync(newProduct);
+            await _appDbContext.SaveChangesAsync();
 
-            return mapper.Map<ProductReadDto>(newProduct);
+            return _mapper.Map<ProductReadDto>(newProduct);
 
         }
 
         //UpdateProduct method for Update a product by Id with data
 
-        public bool UpdateProduct(Guid productId, ProductUpdateDto productData)
+        public async Task<bool> UpdateProduct(Guid productId, ProductUpdateDto productData)
         {
-            var foundProduct = products.FirstOrDefault(p => !string.IsNullOrEmpty(p.ProductName)  && p.ProductId == productId);
+            var foundProduct =await _appDbContext.Products.FirstOrDefaultAsync(p => !string.IsNullOrEmpty(p.ProductName)  && p.ProductId == productId);
             if (foundProduct == null) return false;
-            mapper.Map(productData, foundProduct);
+            _mapper.Map(productData, foundProduct);
+            _appDbContext.Products.Update(foundProduct);
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
         //DeleteProduct method for Delete a product by Id
 
-        public bool DeleteProduct(Guid productId)
+        public async Task<bool> DeleteProduct(Guid productId)
         {
-            var foundProduct = products.FirstOrDefault(p => p.ProductId == productId);
+            var foundProduct =await _appDbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (foundProduct == null) return false;
-            products.Remove(foundProduct);
+            _appDbContext.Products.Remove(foundProduct);
+            await _appDbContext.SaveChangesAsync(); 
             return true;
 
 

@@ -4,10 +4,10 @@ namespace Order_Management_System.Interfaces
 {
     public interface IOrderService
     {
-        List<OrderReadDto> GetAllOrder();
-        OrderReadDto? GetAOrder(Guid orderId);
-        OrderReadDto CreateOrder(OrderCreateDto orderData);
-        bool UpdateOrder(Guid orderId, OrderUpdateDto orderData);
-        bool DeleteOrder(Guid orderId);
+        Task<List<OrderReadDto>> GetAllOrder();
+        Task<OrderReadDto?> GetAOrder(Guid orderId);
+        Task<OrderReadDto> CreateOrder(OrderCreateDto orderData);
+        Task<bool> UpdateOrder(Guid orderId, OrderUpdateDto orderData);
+        Task<bool> DeleteOrder(Guid orderId);
     }
 }

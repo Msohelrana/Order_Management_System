@@ -5,33 +5,33 @@ using Order_Management_System.Interfaces;
 namespace Order_Management_System.Controllers
 {
     [ApiController]
-    [Route("v1/api/orders/")]
+    [Route("v1/api/[controller]")]
     public class OrderController : ControllerBase
     {
 
-        private IOrderService orderService;
+        private IOrderService _orderService;
 
-        public OrderController(IOrderService _orderService)
+        public OrderController(IOrderService orderService)
         {
-            orderService = _orderService;
+            _orderService = orderService;
         }
 
-        //GET : read product
+        //GET : read order
 
         [HttpGet]
-        public IActionResult GetAllOrder()
+        public async Task<IActionResult> GetAllOrder()
         {
-            var orderReadDto = orderService.GetAllOrder();
+            var orderReadDto =await _orderService.GetAllOrder();
             return Ok(ApiResponse<List<OrderReadDto>>
            .SuccessResponse(orderReadDto, 200, "Orders Returned Successfully!"));
         }
 
-        //GET method for getting a single product by Id
+        //GET method for getting a single order by Id
         [HttpGet("{orderId:guid}")]
 
-        public IActionResult GetOrderById(Guid orderId)
+        public async Task<IActionResult> GetOrderById(Guid orderId)
         {
-            var foundOrder = orderService.GetAOrder(orderId);
+            var foundOrder =await _orderService.GetAOrder(orderId);
             if (foundOrder == null)
             {
                 return NotFound(ApiResponse<object>
@@ -40,11 +40,11 @@ namespace Order_Management_System.Controllers
             return Ok(ApiResponse<OrderReadDto>.SuccessResponse(foundOrder, 200, "Order Returned Successfully!"));
         }
 
-        //POST : create products
+        //POST : create orders
         [HttpPost]
-        public IActionResult CreateOrder([FromBody] OrderCreateDto orderData)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDto orderData)
         {
-            var orderReadDto = orderService.CreateOrder(orderData);
+            var orderReadDto =await _orderService.CreateOrder(orderData);
             if (orderReadDto == null)
             {
                 return BadRequest(ApiResponse<object>.SuccessResponse(null, 404, "This product is not available right now!"));
@@ -55,13 +55,13 @@ namespace Order_Management_System.Controllers
 
         }
 
-        //PUT: Update product
+        //PUT: Update order
 
         [HttpPut("{orderId:guid}")]
 
-        public IActionResult UpdateOrder(Guid orderId, [FromBody] OrderUpdateDto orderData)
+        public async Task<IActionResult> UpdateOrder(Guid orderId, [FromBody] OrderUpdateDto orderData)
         {
-            var isUpdate = orderService.UpdateOrder(orderId, orderData);
+            var isUpdate =await _orderService.UpdateOrder(orderId, orderData);
             if (isUpdate == false) return NotFound(ApiResponse<object>
                 .SuccessResponse(null, 404, "Order with this id does not exist!"));
 
@@ -70,12 +70,12 @@ namespace Order_Management_System.Controllers
 
         }
 
-        //DELETE:Delete a product
+        //DELETE:Delete a order
         [HttpDelete("{orderId:guid}")]
 
-        public IActionResult Deleteorders(Guid orderId)
+        public async Task<IActionResult> Deleteorders(Guid orderId)
         {
-            var isDelete = orderService.DeleteOrder(orderId);
+            var isDelete =await _orderService.DeleteOrder(orderId);
             if (isDelete == false) return NotFound(ApiResponse<object>
                 .SuccessResponse(null, 404, "Order with this id does not exist!"));
 

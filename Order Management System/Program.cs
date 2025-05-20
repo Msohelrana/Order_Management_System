@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Order_Management_System.Controllers;
+using Order_Management_System.data;
 using Order_Management_System.Interfaces;
 using Order_Management_System.Services;
 
@@ -12,14 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
-//This is for database connection
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//{
-//    options.UseNpgsql(builder.Configuration
-//    .GetConnectionString("DefaultConnection"));
-//});
+//his is for database connection
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseMySql(builder.Configuration
+    .GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(8, 0, 42)));
+});
 // Add services to the controller
 builder.Services.AddControllers();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -51,49 +54,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// app.MapGet("/hello", () =>
-// {
-//     var response = new
-//     {
-//         Message = "This is a json object",
-//         Success = true
-//     };
-
-//     // return response; // response is an object
-//     return Results.Ok(response);
-// });   //app.MapGet("url or endpoints",methode);ei url a hit korle ja return korte cai seta ei method a likhbo
-// app.MapGet("/", () =>
-// {
-//     return "Get Methode: This root derectory";
-// });
-
-// app.MapPost("/hello", () =>
-// {
-//     // return "POST method: this is for post method"; //post method browser theke test kora jay na
-//     return Results.Created(); // 201
-// });
-
-// app.MapDelete("/hello", () =>
-// {
-//     // return "DELETE Methode: This is delete method";
-//     return Results.NoContent(); //status code 204
-// });
-// app.MapPut("/hello", () =>
-// {
-//     // return "PUT Methode: This is PUT method";
-//     return Results.NoContent();
-// });
-
-// //For return html code
-// app.MapGet("/html", () =>
-// {
-//     return Results.Content("<h1> Hello World!</h1>", "text/html");
-// });
-
-
-
-
 
 app.MapControllers();
 
