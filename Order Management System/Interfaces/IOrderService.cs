@@ -7,7 +7,7 @@ namespace Order_Management_System.Interfaces
         Task<List<OrderReadDto>> GetAllOrder();
         Task<OrderReadDto?> GetAOrder(Guid orderId);
         Task<OrderReadDto> CreateOrder(OrderCreateDto orderData);
-        Task<bool> UpdateOrder(Guid orderId, OrderUpdateDto orderData);
+        Task<int> UpdateOrder(Guid orderId, OrderUpdateDto orderData);
         Task<bool> DeleteOrder(Guid orderId);
     }
 }

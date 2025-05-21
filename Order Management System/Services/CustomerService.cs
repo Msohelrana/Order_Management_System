@@ -43,8 +43,27 @@ namespace Order_Management_System.Services
         {
             var foundCustomer =await _appDbContext.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId);
             if (foundCustomer == null) return false;
-            _mapper.Map(customerData, foundCustomer);
-            _appDbContext.Customers.Update(foundCustomer);
+            if (!string.IsNullOrEmpty(customerData.CustomerName))
+            {
+                foundCustomer.CustomerName= customerData.CustomerName;
+            }
+            if (!string.IsNullOrEmpty(customerData.CustomerEmail))
+            {
+                foundCustomer.CustomerEmail= customerData.CustomerEmail;
+            }
+            if(!string.IsNullOrEmpty(customerData.CustomerPassword))
+            {
+                foundCustomer.CustomerPassword= customerData.CustomerPassword;
+            }
+            if(!string.IsNullOrEmpty(customerData.CustomerPhone))
+            {
+                foundCustomer.CustomerPhone= customerData.CustomerPhone;
+            }
+            if (!string.IsNullOrEmpty(customerData.CustomerCity))
+            {
+                foundCustomer.CustomerCity= customerData.CustomerCity;
+            }
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
 

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Order_Management_System.data;
 using Order_Management_System.DTOs;
 using Order_Management_System.Interfaces;
 
@@ -10,10 +12,12 @@ namespace Order_Management_System.Controllers
     {
 
         private IOrderService _orderService;
+        private readonly AppDbContext _appDbContext;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(AppDbContext appDbContext,IOrderService orderService)
         {
             _orderService = orderService;
+            _appDbContext = appDbContext;
         }
 
         //GET : read order
@@ -44,10 +48,15 @@ namespace Order_Management_System.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDto orderData)
         {
+            var customer = await _appDbContext.Customers.FirstOrDefaultAsync(c => c.CustomerId == orderData.CustomerId);
+            if(customer == null)
+            {
+                return BadRequest(ApiResponse<object>.SuccessResponse(null, 400, "You are not register yet!Please register to order a product!"));
+            }
             var orderReadDto =await _orderService.CreateOrder(orderData);
             if (orderReadDto == null)
             {
-                return BadRequest(ApiResponse<object>.SuccessResponse(null, 404, "This product is not available right now!"));
+                return NotFound(ApiResponse<object>.SuccessResponse(null, 404, "This product is not available right now!"));
             }
 
             return Created("v1/api/orders/{newOrder.OrderId}", ApiResponse<OrderReadDto>
@@ -61,12 +70,14 @@ namespace Order_Management_System.Controllers
 
         public async Task<IActionResult> UpdateOrder(Guid orderId, [FromBody] OrderUpdateDto orderData)
         {
-            var isUpdate =await _orderService.UpdateOrder(orderId, orderData);
-            if (isUpdate == false) return NotFound(ApiResponse<object>
+            var updateValue =await _orderService.UpdateOrder(orderId, orderData);
+            if (updateValue == 1) return NotFound(ApiResponse<object>
+                .SuccessResponse(null, 404, "Product with this id does not exist!"));
+            else if(updateValue == 2) return NotFound(ApiResponse<object>
                 .SuccessResponse(null, 404, "Order with this id does not exist!"));
 
             return Ok(ApiResponse<object>
-                .SuccessResponse(null, 200, "Order Updated Successfully"));
+                    .SuccessResponse(null, 200, "Order Updated Successfully"));
 
         }
 

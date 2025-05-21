@@ -19,7 +19,7 @@ namespace Order_Management_System.Controllers
         //GET : read product
 
         [HttpGet]
-        public async Task<IActionResult> Getproducts([FromQuery] string searchValue = "")
+        public async Task<IActionResult> Getproducts()
         {
 
             var productReadDto =await productService.GetAllProduct();

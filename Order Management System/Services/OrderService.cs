@@ -46,7 +46,8 @@ namespace Order_Management_System.Services
                 return null;
             }
             var foundProduct =await _appDbContext.Products.FirstOrDefaultAsync(p=> p.ProductId==orderData.ProductId);
-            if(foundProduct.Quantity<=0)
+            var foundCustomer= await _appDbContext.Customers.FirstOrDefaultAsync(c => c.CustomerId == orderData.CustomerId);
+            if (foundProduct.Quantity<=0)
             {
                 return null;
             }
@@ -54,6 +55,7 @@ namespace Order_Management_System.Services
             newOrder.OrderId = Guid.NewGuid();
             newOrder.OrderDate = DateTime.UtcNow;
             newOrder.ProductName = foundProduct.ProductName;
+            newOrder.CustomerName =foundCustomer.CustomerName;
             newOrder.TotalPrice = orderData.Quantity*foundProduct.Price;
             foundProduct.Quantity -= orderData.Quantity;
             await _appDbContext.Orders.AddAsync(newOrder);
@@ -65,13 +67,18 @@ namespace Order_Management_System.Services
 
         //UpdateOrder method for Update a order by Id with data
 
-        public async Task<bool> UpdateOrder(Guid orderId, OrderUpdateDto orderData)
+        public async Task<int> UpdateOrder(Guid orderId, OrderUpdateDto orderData)
         {
-            var foundOrder =await _appDbContext.Orders.FirstOrDefaultAsync(o=> o.OrderId == orderId);
-            if (foundOrder == null) return false;
+            if (orderData.ProductId != null)
+            {
+                var foundProduct = await _appDbContext.Products.FirstOrDefaultAsync(p => p.ProductId == orderData.ProductId);
+                if (foundProduct == null) return 1;
+            }
+            var foundOrder = await _appDbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (foundOrder == null) return 2;
             _mapper.Map(orderData, foundOrder);
             _appDbContext.Orders.Update(foundOrder);
-            return true;
+            return 3;
         }
 
         //DeleteOrder method for Delete a order by Id

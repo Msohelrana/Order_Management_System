@@ -54,10 +54,20 @@ namespace Order_Management_System.Services
 
         public async Task<bool> UpdateProduct(Guid productId, ProductUpdateDto productData)
         {
-            var foundProduct =await _appDbContext.Products.FirstOrDefaultAsync(p => !string.IsNullOrEmpty(p.ProductName)  && p.ProductId == productId);
+            var foundProduct =await _appDbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (foundProduct == null) return false;
-            _mapper.Map(productData, foundProduct);
-            _appDbContext.Products.Update(foundProduct);
+            if (!string.IsNullOrEmpty(productData.ProductName))
+            {
+                foundProduct.ProductName = productData.ProductName;
+            }
+
+            foundProduct.Price = productData.Price;
+            foundProduct.Quantity = productData.Quantity;
+
+            if (!string.IsNullOrEmpty(productData.ProductDescription))
+            {
+                foundProduct.ProductDescription = productData.ProductDescription;
+            }
             await _appDbContext.SaveChangesAsync();
             return true;
         }
